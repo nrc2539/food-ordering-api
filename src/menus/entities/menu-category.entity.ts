@@ -6,13 +6,13 @@ import {
 } from 'typeorm';
 
 @Entity('menu_categories')
-export class MenuCategoryEntity {
+export class MenuCategory {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   name: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 }

@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { MenusModule } from './menus/menus.module';
 import { OrdersModule } from './orders/orders.module';
 import { TablesModule } from './tables/tables.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { TablesModule } from './tables/tables.module';
         port: configService.get('DB_PORT'),
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_NAME'),
+        database: configService.get('DB_DATABASE'),
         autoLoadEntities: true,
         synchronize: true, // Be careful with this in production!
         logging: true,
@@ -31,6 +32,7 @@ import { TablesModule } from './tables/tables.module';
     TablesModule,
     OrdersModule,
     MenusModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

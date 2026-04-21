@@ -1,10 +1,18 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('roles')
 export class Role {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'integer' })
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 50 })
   name: string;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
 }

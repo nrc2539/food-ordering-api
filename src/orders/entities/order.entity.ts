@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -15,21 +16,23 @@ export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => TableSession, (tableSession) => tableSession.id)
-  tableSessionId: number;
+  @ManyToOne(() => TableSession, { nullable: false })
+  @JoinColumn({ name: 'table_session_id' })
+  tableSession: TableSession;
 
-  @Column()
+  @Column({ name: 'total_price' })
   totalPrice: number;
 
   @Column({ type: 'enum', enum: OrderStatus })
   status: OrderStatus;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.id)
-  updatedBy: number; // DESC: user ID who last updated the order
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'updated_by' })
+  updatedBy: User;
 }

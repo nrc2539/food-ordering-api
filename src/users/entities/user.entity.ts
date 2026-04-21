@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Role } from './role.entity';
 
 @Entity('users')
@@ -6,15 +12,19 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 70 })
   name: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, type: 'varchar', length: 254 })
   email: string;
 
-  @Column()
+  @Column({ type: 'text' })
   password: string;
 
-  @ManyToOne(() => Role, (role) => role.id)
-  roleId: number;
+  @Column({ name: 'refresh_token', type: 'text', nullable: true })
+  refreshToken: string;
+
+  @ManyToOne(() => Role)
+  @JoinColumn({ name: 'role_id' })
+  role: Role;
 }

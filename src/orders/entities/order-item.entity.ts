@@ -1,16 +1,25 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Order } from './order.entity';
+import { MenuItem } from 'src/menus/entities/menu-item.entity';
 
 @Entity('order_items')
 export class OrderItem {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Order, (order) => order.id)
-  orderId: number;
+  @ManyToOne(() => Order, { nullable: false })
+  @JoinColumn({ name: 'order_id' })
+  order: Order;
 
-  @Column()
-  menuItemId: number; // Assuming you have a MenuItem entity with an ID
+  @ManyToOne(() => MenuItem, { nullable: false })
+  @JoinColumn({ name: 'menu_item_id' })
+  menuItem: MenuItem;
 
   @Column()
   quantity: number;
