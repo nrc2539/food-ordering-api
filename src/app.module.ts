@@ -23,8 +23,8 @@ import { AuthModule } from './auth/auth.module';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
         autoLoadEntities: true,
-        synchronize: true, // Be careful with this in production!
-        logging: true,
+        synchronize: configService.get('ENVIRONMENT') === 'develop' || false,
+        logging: configService.get('ENVIRONMENT') === 'develop' || false,
       }),
       inject: [ConfigService],
     }),
