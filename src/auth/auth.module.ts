@@ -10,9 +10,14 @@ import { AuthController } from './auth.controller';
 import { Role } from 'src/users/entities/role.entity';
 import { Permission } from 'src/users/entities/permission.entity';
 import { Clearance } from 'src/users/entities/clearance.entity';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { AccessControlModule } from 'src/access-control/access-control.module';
 
 @Module({
   imports: [
+    ConfigModule,
+    AccessControlModule,
     TypeOrmModule.forFeature([User, Role, Clearance, Permission]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
@@ -24,7 +29,7 @@ import { Clearance } from 'src/users/entities/clearance.entity';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
-  exports: [AuthService],
+  providers: [AuthService, JwtStrategy, JwtAuthGuard],
+  exports: [AuthService, JwtAuthGuard],
 })
 export class AuthModule {}

@@ -47,7 +47,8 @@ export class AuthService {
   async validateUser(email: string) {
     const user = await this.userRepository.findOne({
       where: { email },
-      select: ['id', 'name', 'email', 'refreshToken'], // DESC: select only necessary fields
+      select: ['id', 'name', 'email'], // DESC: select only necessary fields
+      relations: ['role'], // DESC: include role relation
     });
     return user;
   }

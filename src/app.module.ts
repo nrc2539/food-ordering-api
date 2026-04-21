@@ -9,6 +9,7 @@ import { MenusModule } from './menus/menus.module';
 import { OrdersModule } from './orders/orders.module';
 import { TablesModule } from './tables/tables.module';
 import { AuthModule } from './auth/auth.module';
+import { AccessControlModule } from './access-control/access-control.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { AuthModule } from './auth/auth.module';
     OrdersModule,
     MenusModule,
     AuthModule,
+    AccessControlModule,
   ],
   controllers: [AppController],
   providers: [AppService],
