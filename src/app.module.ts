@@ -8,7 +8,6 @@ import { UsersModule } from './users/users.module';
 import { MenusModule } from './menus/menus.module';
 import { OrdersModule } from './orders/orders.module';
 import { TablesModule } from './tables/tables.module';
-import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
