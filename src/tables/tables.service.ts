@@ -54,11 +54,12 @@ export class TablesService {
     return table;
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number): Promise<{ message: string }> {
     const table = await this.findOne(id);
     if (!table) {
       throw new NotFoundException('Table not found.');
     }
-    await this.tableRepository.remove(table);
+    await this.tableRepository.softDelete(id);
+    return { message: 'Table removed successfully.' };
   }
 }
