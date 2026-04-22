@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -15,6 +16,7 @@ export class TableSession {
   id: number;
 
   @ManyToOne(() => Table, (table) => table.id)
+  @JoinColumn({ name: 'table_id' })
   table: Table;
 
   @Column({ name: 'qr_code' })

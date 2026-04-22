@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Role } from './role.entity';
 
 @Entity('users')
@@ -19,5 +25,6 @@ export class User {
   refreshToken: string;
 
   @ManyToOne(() => Role, (role) => role.id)
+  @JoinColumn({ name: 'role_id' })
   role: Role;
 }

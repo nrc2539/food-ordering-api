@@ -21,6 +21,7 @@ export class Order {
   @ManyToOne(() => TableSession, (tableSession) => tableSession.id, {
     nullable: false,
   })
+  @JoinColumn({ name: 'table_session_id' })
   tableSession: TableSession;
 
   @Column({ name: 'total_price' })
@@ -35,7 +36,7 @@ export class Order {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user) => user.id)
   @JoinColumn({ name: 'updated_by' })
   updatedBy: User;
 
