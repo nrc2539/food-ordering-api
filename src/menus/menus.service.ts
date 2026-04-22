@@ -71,7 +71,12 @@ export class MenusService {
     if (!menuCategory) {
       throw new NotFoundException('Menu category not found.');
     }
-    await this.menuCategoryRepository.remove(menuCategory);
+    if (menuCategory.menuItems && menuCategory.menuItems.length > 0) {
+      throw new BadRequestException(
+        'Cannot delete category with associated menu items.',
+      );
+    }
+    await this.menuCategoryRepository.softDelete(id);
     return { message: 'Menu category removed successfully.' };
   }
 
@@ -151,7 +156,7 @@ export class MenusService {
     if (!menuItem) {
       throw new NotFoundException('Menu item not found.');
     }
-    await this.menuItemRepository.remove(menuItem);
+    await this.menuItemRepository.softDelete(id);
     return { message: 'Menu item removed successfully.' };
   }
 }

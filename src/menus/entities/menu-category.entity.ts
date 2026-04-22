@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   OneToMany,
   UpdateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { MenuItem } from './menu-item.entity';
 
@@ -21,6 +22,9 @@ export class MenuCategory {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt: Date | null;
 
   @OneToMany(() => MenuItem, (menuItem) => menuItem.category)
   menuItems: MenuItem[];
