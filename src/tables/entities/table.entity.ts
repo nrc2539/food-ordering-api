@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { TableSession } from './table-session.entity';
+import { TableSession } from '../../table-sessions/entities/table-session.entity';
 
 @Entity('tables')
 export class Table {

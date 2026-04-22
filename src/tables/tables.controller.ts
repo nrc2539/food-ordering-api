@@ -1,8 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { TablesService } from './tables.service';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/access-control/guards/roles.guard';
+import { Roles } from 'src/access-control/decorators/roles.decorator';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('admin')
 @Controller('tables')
 export class TablesController {
   constructor(private readonly tablesService: TablesService) {}

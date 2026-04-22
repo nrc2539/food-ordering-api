@@ -6,8 +6,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Table } from './table.entity';
-import { TableSessionStatus } from '../table.enum';
+import { Table } from '../../tables/entities/table.entity';
+import { TableSessionStatus } from '../table-session.enum';
 import { Order } from 'src/orders/entities/order.entity';
 
 @Entity('table_sessions')
@@ -15,12 +15,12 @@ export class TableSession {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Table, (table) => table.id)
+  @ManyToOne(() => Table, (table) => table.sessions)
   @JoinColumn({ name: 'table_id' })
   table: Table;
 
-  @Column({ name: 'qr_code' })
-  qrCode: string;
+  @Column({ name: 'session_token', type: 'text', unique: true })
+  sessionToken: string;
 
   @Column({ type: 'enum', enum: TableSessionStatus })
   status: TableSessionStatus;

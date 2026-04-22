@@ -1,26 +1,64 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
+import { Table } from './entities/table.entity';
 
 @Injectable()
 export class TablesService {
-  create(createTableDto: CreateTableDto) {
-    return 'This action adds a new table';
+  constructor(
+    @InjectRepository(Table) private tableRepository: Repository<Table>,
+  ) {}
+
+  async create(createTableDto: CreateTableDto): Promise<Table> {
+    const { name } = createTableDto;
+    if (!name) {
+      throw new BadRequestException('Table name is required.');
+    }
+    const table = this.tableRepository.create({ name });
+    await this.tableRepository.save(table);
+
+    return table;
   }
 
-  findAll() {
-    return `This action returns all tables`;
+  findAll(): Promise<Table[]> {
+    return this.tableRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} table`;
+  async findOne(id: number): Promise<Table | null> {
+    const table = await this.tableRepository.findOne({ where: { id } });
+    if (!table) {
+      throw new NotFoundException('Table not found.');
+    }
+
+    return table;
   }
 
-  update(id: number, updateTableDto: UpdateTableDto) {
-    return `This action updates a #${id} table`;
+  async update(
+    id: number,
+    updateTableDto: UpdateTableDto,
+  ): Promise<Table | null> {
+    const { name } = updateTableDto;
+    const table = await this.findOne(id);
+    if (!table || !name) {
+      throw new BadRequestException('Table not found or name is missing.');
+    }
+    table.name = name;
+    await this.tableRepository.save(table);
+    return table;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} table`;
+  async remove(id: number): Promise<void> {
+    const table = await this.findOne(id);
+    if (!table) {
+      throw new NotFoundException('Table not found.');
+    }
+    await this.tableRepository.remove(table);
   }
 }

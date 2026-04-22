@@ -10,6 +10,7 @@ import { OrdersModule } from './orders/orders.module';
 import { TablesModule } from './tables/tables.module';
 import { AuthModule } from './auth/auth.module';
 import { AccessControlModule } from './access-control/access-control.module';
+import { TableSessionsModule } from './table-sessions/table-sessions.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AccessControlModule } from './access-control/access-control.module';
     MenusModule,
     AuthModule,
     AccessControlModule,
+    TableSessionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
