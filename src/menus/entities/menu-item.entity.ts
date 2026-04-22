@@ -6,6 +6,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { MenuCategory } from './menu-category.entity';
 import { OrderItem } from 'src/orders/entities/order-item.entity';
@@ -32,6 +33,9 @@ export class MenuItem {
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.menuItem)
   orderItems: OrderItem[];
