@@ -4,9 +4,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MenuCategory } from './menu-category.entity';
+import { OrderItem } from 'src/orders/entities/order-item.entity';
 
 @Entity('menu_items')
 export class MenuItem {
@@ -19,7 +21,9 @@ export class MenuItem {
   @Column()
   price: number;
 
-  @ManyToOne(() => MenuCategory, { nullable: true })
+  @ManyToOne(() => MenuCategory, (category) => category.menuItems, {
+    nullable: true,
+  })
   @JoinColumn({ name: 'category_id' })
   category: MenuCategory;
 
@@ -28,4 +32,7 @@ export class MenuItem {
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.menuItem)
+  orderItems: OrderItem[];
 }

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { TableSession } from './table-session.entity';
 
 @Entity('tables')
 export class Table {
@@ -7,4 +8,7 @@ export class Table {
 
   @Column()
   name: string;
+
+  @OneToMany(() => TableSession, (session) => session.table)
+  sessions: TableSession[];
 }
