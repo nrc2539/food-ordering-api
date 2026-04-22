@@ -1,4 +1,4 @@
-import { TableSession } from 'src/tables/entities/table-session.entity';
+import { TableSession } from 'src/table-sessions/entities/table-session.entity';
 import {
   Column,
   CreateDateColumn,
@@ -18,7 +18,7 @@ export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => TableSession, (tableSession) => tableSession.id, {
+  @ManyToOne(() => TableSession, (tableSession) => tableSession.orders, {
     nullable: false,
   })
   @JoinColumn({ name: 'table_session_id' })
@@ -36,7 +36,7 @@ export class Order {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'updated_by' })
   updatedBy: User;
 
