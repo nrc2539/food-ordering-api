@@ -1,4 +1,24 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateOrderDto } from './create-order.dto';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  ValidateNested,
+} from 'class-validator';
+import { OrderItemDto } from './order-item.dto';
 
-export class UpdateOrderDto extends PartialType(CreateOrderDto) {}
+import { OrderStatus } from '../order.enum';
+
+export class UpdateOrderDto {
+  @IsNotEmpty()
+  @IsEnum(OrderStatus)
+  status: OrderStatus;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  @Type(() => OrderItemDto)
+  items?: OrderItemDto[];
+}

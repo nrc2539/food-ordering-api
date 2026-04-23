@@ -2,6 +2,7 @@ import { TableSession } from 'src/table-sessions/entities/table-session.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -24,7 +25,7 @@ export class Order {
   @JoinColumn({ name: 'table_session_id' })
   tableSession: TableSession;
 
-  @Column({ name: 'total_price' })
+  @Column({ name: 'total_price', type: 'decimal', precision: 10, scale: 2 })
   totalPrice: number;
 
   @Column({ type: 'enum', enum: OrderStatus })
@@ -36,10 +37,13 @@ export class Order {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
+  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
+  deletedAt: Date | null;
+
   @ManyToOne(() => User)
   @JoinColumn({ name: 'updated_by' })
   updatedBy: User;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })
   orderItems: OrderItem[];
 }

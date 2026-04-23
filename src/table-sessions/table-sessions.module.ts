@@ -10,5 +10,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [TypeOrmModule.forFeature([TableSession]), TablesModule, AuthModule],
   controllers: [TableSessionsController],
   providers: [TableSessionsService],
+  exports: [TableSessionsService],
 })
 export class TableSessionsModule {}
