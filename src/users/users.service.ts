@@ -1,22 +1,58 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+import { FindOptionsSelect, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+
+import { User } from './entities/user.entity';
+import { Role } from './entities/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { FindOptionsSelect, Repository } from 'typeorm';
+import { FindAllUserDto } from './dto/find-all-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
+    @InjectRepository(Role) private roleRepository: Repository<Role>,
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async create(createUserDto: CreateUserDto) {
+    const { name, email, password, roleId } = createUserDto;
+    if (!name) {
+      throw new BadRequestException('User name is required.');
+    }
+
+    const role = await this.roleRepository.findOne({ where: { id: roleId } });
+    if (!role) {
+      throw new BadRequestException('Role not found.');
+    }
+    const hashPassword = await bcrypt.hash(password, 10);
+    const user = this.userRepository.create({
+      name,
+      email,
+      password: hashPassword,
+      role,
+    });
+    await this.userRepository.save(user);
+
+    return user;
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll(findAllUserDto: FindAllUserDto) {
+    const roleIds = findAllUserDto.roleIds;
+    const query = this.userRepository.createQueryBuilder('user');
+    query.leftJoinAndSelect('user.role', 'role');
+    query.addOrderBy('user.id', 'ASC');
+
+    if (roleIds && roleIds.length > 0) {
+      query.where('role.id IN (:...roleIds)', { roleIds });
+    }
+
+    return query.getMany();
   }
 
   async findOne({
@@ -37,11 +73,32 @@ export class UsersService {
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const { roleId, name } = updateUserDto;
+    const user = await this.findOne({ id });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const role = await this.roleRepository.findOne({ where: { id: roleId } });
+    if (!role) {
+      throw new NotFoundException('Not found role for user.');
+    }
+
+    if (name) {
+      user.name = name;
+    }
+    user.role = role;
+    await this.userRepository.save(user);
+
+    return user;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const user = await this.findOne({ id });
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+    await this.userRepository.softDelete(id);
+    return { message: 'User removed successfully.' };
   }
 }
