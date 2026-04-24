@@ -46,8 +46,7 @@ services:
           cpus: '0.5'
           memory: 512M
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     networks:
       - food-ordering-network
 networks:
