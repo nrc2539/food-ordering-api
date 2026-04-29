@@ -13,23 +13,31 @@ import { Clearance } from 'src/users/entities/clearance.entity';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AccessControlModule } from 'src/access-control/access-control.module';
+import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 
 @Module({
   imports: [
     ConfigModule,
     AccessControlModule,
+    PassportModule,
     TypeOrmModule.forFeature([User, Role, Clearance, Permission]),
-    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.getOrThrow<string>('JWT_SECRET'),
+        secret: configService.getOrThrow<string>('ACCESS_TOKEN_SECRET'),
       }),
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtAuthGuard],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    JwtAuthGuard,
+    JwtRefreshStrategy,
+    JwtRefreshGuard,
+  ],
   exports: [AuthService, JwtAuthGuard],
 })
 export class AuthModule {}

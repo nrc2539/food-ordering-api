@@ -25,7 +25,7 @@ export class User {
   password: string;
 
   @Column({ name: 'refresh_token', type: 'text', nullable: true })
-  refreshToken: string;
+  refreshToken: string | null;
 
   @ManyToOne(() => Role)
   @JoinColumn({ name: 'role_id' })
