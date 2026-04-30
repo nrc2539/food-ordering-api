@@ -1,5 +1,5 @@
 import type { Request } from 'express';
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { JwtToken } from './auth.interface';
@@ -25,13 +25,6 @@ export class AuthController {
     const refreshToken = req.user?.['refreshToken'] as unknown as string;
 
     return this.authService.refreshToken(userId, refreshToken);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  getProfile(@CurrentUser() user: User) {
-    const userId = user.id;
-    return { message: `return profile of user ID ${userId}` };
   }
 
   @UseGuards(JwtAuthGuard)
