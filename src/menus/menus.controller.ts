@@ -35,7 +35,7 @@ export class MenusController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
-  @Get(':id')
+  @Get('categories/:id')
   findOneMenuCategory(@Param('id') id: string) {
     return this.menusService.findOneMenuCategory(+id);
   }
