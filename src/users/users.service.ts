@@ -49,7 +49,7 @@ export class UsersService {
     query.addOrderBy('user.id', 'ASC');
 
     if (roleIds && roleIds.length > 0) {
-      query.where('role.id IN (:...roleIds)', { roleIds });
+      query.andWhere('role.id IN (:...roleIds)', { roleIds });
     }
 
     return query.getMany();
