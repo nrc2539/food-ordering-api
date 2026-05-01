@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
 import { Table } from './entities/table.entity';
+import { TableSessionStatus } from 'src/table-sessions/table-session.enum';
 
 @Injectable()
 export class TablesService {
@@ -27,8 +28,17 @@ export class TablesService {
     return table;
   }
 
-  findAll(): Promise<Table[]> {
-    return this.tableRepository.find();
+  async findAll(): Promise<Table[]> {
+    const data = await this.tableRepository.find({
+      relations: ['sessions'],
+      order: { id: 'ASC' },
+    });
+    return data.map((v) => ({
+      ...v,
+      isAvailable: v.sessions.every(
+        (s) => s.status === TableSessionStatus.CLOSED,
+      ),
+    }));
   }
 
   async findOne(id: number): Promise<Table | null> {
