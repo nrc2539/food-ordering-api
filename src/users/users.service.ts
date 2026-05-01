@@ -8,15 +8,15 @@ import {
 } from '@nestjs/common';
 
 import { User } from './entities/user.entity';
-import { Role } from './entities/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FindAllUserDto } from './dto/find-all-user.dto';
+import { RolesService } from 'src/roles/roles.service';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(Role) private roleRepository: Repository<Role>,
+    private roleService: RolesService,
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
@@ -26,7 +26,7 @@ export class UsersService {
       throw new BadRequestException('User name is required.');
     }
 
-    const role = await this.roleRepository.findOne({ where: { id: roleId } });
+    const role = await this.roleService.findOne(roleId);
     if (!role) {
       throw new BadRequestException('Role not found.');
     }
@@ -79,7 +79,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    const role = await this.roleRepository.findOne({ where: { id: roleId } });
+    const role = await this.roleService.findOne(roleId);
     if (!role) {
       throw new NotFoundException('Not found role for user.');
     }

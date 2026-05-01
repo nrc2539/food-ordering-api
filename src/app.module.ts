@@ -11,6 +11,7 @@ import { TablesModule } from './tables/tables.module';
 import { AuthModule } from './auth/auth.module';
 import { AccessControlModule } from './access-control/access-control.module';
 import { TableSessionsModule } from './table-sessions/table-sessions.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { TableSessionsModule } from './table-sessions/table-sessions.module';
     AuthModule,
     AccessControlModule,
     TableSessionsModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
