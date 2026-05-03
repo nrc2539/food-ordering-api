@@ -29,15 +29,21 @@ export class TablesService {
   }
 
   async findAll(): Promise<Table[]> {
-    const data = await this.tableRepository.find({
-      relations: ['sessions'],
-      order: { id: 'ASC' },
-    });
+    const data = await this.tableRepository
+      .createQueryBuilder('table')
+      .leftJoinAndSelect(
+        'table.sessions',
+        'session',
+        'session.status != :status',
+        { status: TableSessionStatus.CLOSED },
+      )
+      .orderBy('table.id', 'ASC')
+      .getMany();
+
     return data.map((v) => ({
       ...v,
-      isAvailable: v.sessions.every(
-        (s) => s.status === TableSessionStatus.CLOSED,
-      ),
+      isAvailable: v.sessions.length === 0,
+      activeSession: v.sessions[0] || null,
     }));
   }
 

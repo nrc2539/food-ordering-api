@@ -68,7 +68,12 @@ export class TableSessionsService {
   }
 
   findOneBySessionToken(sessionToken: string) {
-    return this.tableSessionRepository.findOne({ where: { sessionToken } });
+    if (!sessionToken) {
+      throw new NotFoundException('Not found table session.');
+    }
+    return this.tableSessionRepository.findOne({
+      where: { sessionToken, status: TableSessionStatus.ACTIVE },
+    });
   }
 
   private findActiveSessionByTableId(tableId: number) {

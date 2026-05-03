@@ -78,10 +78,16 @@ export class OrdersService {
 
   async findAll(findAllOrderDto: FindAllOrderDto) {
     const tableSessionToken = findAllOrderDto.sessionToken;
+    const status = findAllOrderDto.status;
     const query = this.orderRepository.createQueryBuilder('orders');
     query.leftJoinAndSelect('orders.tableSession', 'tableSession');
+    query.leftJoinAndSelect('tableSession.table', 'table');
     query.leftJoinAndSelect('orders.orderItems', 'orderItems');
-    query.orderBy('orders.id', 'ASC');
+    query.leftJoinAndSelect('orderItems.menuItem', 'menuItem');
+    query.orderBy('orders.id', 'DESC');
+    if (status) {
+      query.andWhere('orders.status = :status', { status });
+    }
     if (tableSessionToken) {
       const tableSession =
         await this.tableSessionService.findOneBySessionToken(tableSessionToken);
