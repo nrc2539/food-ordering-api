@@ -1,7 +1,9 @@
-import { IsOptional } from 'class-validator';
+import { IsDate, IsOptional } from 'class-validator';
 import { OrderStatus } from '../order.enum';
+import { PaginationDto } from 'src/utils/pagination/dto/pagination.dto';
+import { Type } from 'class-transformer';
 
-export class FindAllOrderDto {
+export class FindAllOrderDto extends PaginationDto {
   @IsOptional()
   sessionToken?: string;
 
@@ -9,8 +11,12 @@ export class FindAllOrderDto {
   status?: OrderStatus;
 
   @IsOptional()
-  startAt?: string; // ISO Date string
+  @Type(() => Date)
+  @IsDate()
+  startAt?: Date;
 
   @IsOptional()
-  endAt?: string; // ISO Date string
+  @Type(() => Date)
+  @IsDate()
+  endAt?: Date;
 }

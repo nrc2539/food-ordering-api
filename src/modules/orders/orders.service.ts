@@ -12,6 +12,7 @@ import { TableSessionsService } from 'src/modules/table-sessions/table-sessions.
 import { TableSessionStatus } from 'src/modules/table-sessions/table-session.enum';
 import { FindAllOrderDto } from './dto/find-all-order.dto';
 import { UsersService } from 'src/modules/users/users.service';
+import { paginateQueryBuilder } from 'src/utils/pagination/pagination.utils';
 
 @Injectable()
 export class OrdersService {
@@ -79,14 +80,28 @@ export class OrdersService {
   async findAll(findAllOrderDto: FindAllOrderDto) {
     const tableSessionToken = findAllOrderDto.sessionToken;
     const status = findAllOrderDto.status;
-    const query = this.orderRepository.createQueryBuilder('orders');
-    query.leftJoinAndSelect('orders.tableSession', 'tableSession');
-    query.leftJoinAndSelect('tableSession.table', 'table');
-    query.leftJoinAndSelect('orders.orderItems', 'orderItems');
-    query.leftJoinAndSelect('orderItems.menuItem', 'menuItem');
-    query.orderBy('orders.id', 'DESC');
+    const startAt = findAllOrderDto.startAt;
+    const endAt = findAllOrderDto.endAt;
+    const queryBuilder = this.orderRepository.createQueryBuilder('orders');
+    queryBuilder.leftJoinAndSelect('orders.tableSession', 'tableSession');
+    queryBuilder.leftJoinAndSelect('tableSession.table', 'table');
+    queryBuilder.leftJoinAndSelect('orders.orderItems', 'orderItems');
+    queryBuilder.leftJoinAndSelect('orderItems.menuItem', 'menuItem');
+    queryBuilder.leftJoin('orders.updatedBy', 'updatedBy');
+    queryBuilder.addSelect([
+      'updatedBy.id',
+      'updatedBy.name',
+      'updatedBy.email',
+    ]);
+    queryBuilder.orderBy('orders.id', 'DESC');
     if (status) {
-      query.andWhere('orders.status = :status', { status });
+      queryBuilder.andWhere('orders.status = :status', { status });
+    }
+    if (startAt) {
+      queryBuilder.andWhere('orders.createdAt >= :startAt', { startAt });
+    }
+    if (endAt) {
+      queryBuilder.andWhere('orders.createdAt <= :endAt', { endAt });
     }
     if (tableSessionToken) {
       const tableSession =
@@ -94,11 +109,11 @@ export class OrdersService {
       if (!tableSession) {
         return [];
       }
-      query.andWhere('orders.tableSession = :tableSessionId', {
+      queryBuilder.andWhere('orders.tableSession = :tableSessionId', {
         tableSessionId: tableSession.id,
       });
     }
-    return query.getMany();
+    return paginateQueryBuilder(queryBuilder, findAllOrderDto);
   }
 
   async findOne(id: number, manager?: EntityManager) {

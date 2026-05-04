@@ -30,6 +30,7 @@ export class OrdersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
   @Get()
   findAll(@Query() findAllOrderDto: FindAllOrderDto) {
     return this.ordersService.findAll(findAllOrderDto);
