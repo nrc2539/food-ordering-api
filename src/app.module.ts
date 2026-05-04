@@ -20,14 +20,13 @@ import { AccessControlModule } from './modules/access-control/access-control.mod
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: configService.get('DB_HOST'),
-        port: configService.get('DB_PORT'),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_DATABASE'),
+        url: configService.get('DATABASE_URL'),
         autoLoadEntities: true,
-        synchronize: configService.get('NODE_ENV') === 'develop' || false,
-        logging: configService.get('NODE_ENV') === 'develop' || false,
+        synchronize: configService.get('NODE_ENV') !== 'production' || false,
+        logging: configService.get('NODE_ENV') !== 'production' || false,
+        ssl: configService.get<string>('DATABASE_URL')?.includes('supabase.co')
+          ? { rejectUnauthorized: false }
+          : false,
       }),
       inject: [ConfigService],
     }),
