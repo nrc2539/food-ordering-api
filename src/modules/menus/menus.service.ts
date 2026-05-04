@@ -12,6 +12,7 @@ import { FindAllMenuDto } from './dto/find-all-menu.dto';
 import { UpdateMenuCategoryDto } from './dto/update-menu-category.dto';
 import { CreateMenuCategoryDto } from './dto/create-menu-category.dto';
 import { Repository } from 'typeorm';
+import { paginateQueryBuilder } from 'src/utils/pagination/pagination.utils';
 
 @Injectable()
 export class MenusService {
@@ -101,20 +102,22 @@ export class MenusService {
   findAllMenuItems(findAllMenuDto: FindAllMenuDto) {
     const categoryId = findAllMenuDto.categoryId;
     const isAvailable = findAllMenuDto.isAvailable;
-    const query = this.menuItemRepository.createQueryBuilder('menuItem');
+    const queryBuilder = this.menuItemRepository.createQueryBuilder('menuItem');
 
     if (categoryId) {
-      query.where('menuItem.category_id = :categoryId', { categoryId });
+      queryBuilder.where('menuItem.category_id = :categoryId', { categoryId });
     }
 
     if (isAvailable !== undefined) {
-      query.andWhere('menuItem.isAvailable = :isAvailable', { isAvailable });
+      queryBuilder.andWhere('menuItem.isAvailable = :isAvailable', {
+        isAvailable,
+      });
     }
 
-    query.leftJoinAndSelect('menuItem.category', 'category');
-    query.addOrderBy('menuItem.id', 'ASC');
+    queryBuilder.leftJoinAndSelect('menuItem.category', 'category');
+    queryBuilder.addOrderBy('menuItem.id', 'ASC');
 
-    return query.getMany();
+    return paginateQueryBuilder(queryBuilder, findAllMenuDto);
   }
 
   async findOneMenuItem(id: number) {

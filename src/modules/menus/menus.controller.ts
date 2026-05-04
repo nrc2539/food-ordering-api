@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { MenusService } from './menus.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
@@ -23,6 +25,7 @@ import { Roles } from '../access-control/decorators/roles.decorator';
 export class MenusController {
   constructor(private readonly menusService: MenusService) {}
 
+  @UsePipes(new ValidationPipe({ transform: true }))
   @Get()
   findAll(@Query() findAllMenuDto: FindAllMenuDto) {
     return this.menusService.findAllMenuItems(findAllMenuDto);

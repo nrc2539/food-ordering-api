@@ -12,7 +12,7 @@ export class PaginationDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  limit?: number = 10;
+  limitPerPage?: number = 10;
 
   @IsOptional()
   @Transform(({ value }) => value === 'true') // Converts string "true" from URL to boolean

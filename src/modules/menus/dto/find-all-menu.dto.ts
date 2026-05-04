@@ -1,6 +1,7 @@
 import { IsOptional } from 'class-validator';
+import { PaginationDto } from 'src/utils/pagination/dto/pagination.dto';
 
-export class FindAllMenuDto {
+export class FindAllMenuDto extends PaginationDto {
   @IsOptional()
   categoryId?: string;
 

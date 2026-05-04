@@ -1,7 +1,8 @@
 import { Transform } from 'class-transformer';
 import { IsArray, IsInt, IsOptional } from 'class-validator';
+import { PaginationDto } from 'src/utils/pagination/dto/pagination.dto';
 
-export class FindAllUserDto {
+export class FindAllUserDto extends PaginationDto {
   @IsOptional()
   @IsArray()
   @IsInt({ each: true })

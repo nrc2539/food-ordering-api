@@ -12,6 +12,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FindAllUserDto } from './dto/find-all-user.dto';
 import { RolesService } from 'src/modules/roles/roles.service';
+import { paginateQueryBuilder } from 'src/utils/pagination/pagination.utils';
 
 @Injectable()
 export class UsersService {
@@ -44,15 +45,15 @@ export class UsersService {
 
   async findAll(findAllUserDto: FindAllUserDto) {
     const roleIds = findAllUserDto.roleIds;
-    const query = this.userRepository.createQueryBuilder('user');
-    query.leftJoinAndSelect('user.role', 'role');
-    query.addOrderBy('user.id', 'ASC');
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
+    queryBuilder.leftJoinAndSelect('user.role', 'role');
+    queryBuilder.addOrderBy('user.id', 'ASC');
 
     if (roleIds && roleIds.length > 0) {
-      query.andWhere('role.id IN (:...roleIds)', { roleIds });
+      queryBuilder.andWhere('role.id IN (:...roleIds)', { roleIds });
     }
 
-    return query.getMany();
+    return paginateQueryBuilder(queryBuilder, findAllUserDto);
   }
 
   async findOne({

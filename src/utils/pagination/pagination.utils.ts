@@ -8,32 +8,32 @@ import {
 import { PaginationDto } from './dto/pagination.dto';
 import { PaginatedResult } from './pagination.interface';
 
-// 1. For Simple Services (Repository)
+// For Simple Services (Repository)
 export async function paginate<T extends ObjectLiteral>(
   repository: Repository<T>,
   query: PaginationDto,
   options: FindManyOptions<T> = {},
 ): Promise<PaginatedResult<T>> {
-  const { page = 1, limit = 10, all = false } = query;
+  const { page = 1, limitPerPage = 10, all = false } = query;
 
   const [data, total] = await repository.findAndCount({
     ...options,
-    skip: all ? undefined : (page - 1) * limit,
-    take: all ? undefined : limit,
+    skip: all ? undefined : (page - 1) * limitPerPage,
+    take: all ? undefined : limitPerPage,
   });
 
   return formatResponse(data, total, query);
 }
 
-// 2. For Complex Services (Query Builder)
+// For Complex Services (Query Builder)
 export async function paginateQueryBuilder<T extends ObjectLiteral>(
   queryBuilder: SelectQueryBuilder<T>,
   query: PaginationDto,
 ): Promise<PaginatedResult<T>> {
-  const { page = 1, limit = 10, all = false } = query;
+  const { page = 1, limitPerPage = 10, all = false } = query;
 
   if (!all) {
-    queryBuilder.skip((page - 1) * limit).take(limit);
+    queryBuilder.skip((page - 1) * limitPerPage).take(limitPerPage);
   }
 
   const [data, total] = await queryBuilder.getManyAndCount();
@@ -42,13 +42,13 @@ export async function paginateQueryBuilder<T extends ObjectLiteral>(
 
 // Internal Helper to keep it DRY
 function formatResponse<T>(data: T[], total: number, query: PaginationDto) {
-  const { page = 1, limit = 10, all = false } = query;
+  const { page = 1, limitPerPage = 10, all = false } = query;
   return {
     data,
     meta: {
       totalItems: total,
-      itemsPerPage: all ? total : limit,
-      totalPages: all ? 1 : Math.ceil(total / limit),
+      itemsPerPage: all ? total : limitPerPage,
+      totalPages: all ? 1 : Math.ceil(total / limitPerPage),
       currentPage: all ? 1 : page,
     },
   };
