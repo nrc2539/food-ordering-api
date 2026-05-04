@@ -5,7 +5,7 @@ config();
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: 'db', // host name in docker-compose db service
+  host: process.env.DB_HOST, // host name in docker-compose db service
   port: parseInt(process.env.DB_PORT || '5432'),
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
