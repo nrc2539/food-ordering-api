@@ -4,14 +4,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { MenusModule } from './menus/menus.module';
-import { OrdersModule } from './orders/orders.module';
-import { TablesModule } from './tables/tables.module';
-import { AuthModule } from './auth/auth.module';
-import { AccessControlModule } from './access-control/access-control.module';
-import { TableSessionsModule } from './table-sessions/table-sessions.module';
-import { RolesModule } from './roles/roles.module';
+import { UsersModule } from './modules/users/users.module';
+import { MenusModule } from './modules/menus/menus.module';
+import { OrdersModule } from './modules/orders/orders.module';
+import { TablesModule } from './modules/tables/tables.module';
+import { TableSessionsModule } from './modules/table-sessions/table-sessions.module';
+import { RolesModule } from './modules/roles/roles.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { AccessControlModule } from './modules/access-control/access-control.module';
 
 @Module({
   imports: [

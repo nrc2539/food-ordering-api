@@ -10,7 +10,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  entities: ['dist/**/*.entity{.ts,.js}'], // ต้องชี้ไปยัง Entity ที่ compile แล้ว
+  entities: ['dist/modules/**/*.entity{.ts,.js}'], // ต้องชี้ไปยัง Entity ที่ compile แล้ว
   migrations: ['dist/migrations/*.js'], // ตำแหน่งที่เก็บไฟล์ migration
   synchronize: false,
 });
