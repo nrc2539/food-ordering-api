@@ -40,6 +40,7 @@ on:
 
 env:
   PROJECT_ID: 'nrc-mini-project' # TODO: update to your Google Cloud project ID
+  GAR_NAME: 'food-ordering-repo' # repository name in Artifact Registry
   REGION: 'asia-southeast3' # TODO: update to your region
   SERVICE: 'food-ordering-api' # TODO: update to your service name
   WORKLOAD_IDENTITY_PROVIDER: 'projects/966915883677/locations/global/workloadIdentityPools/github-actions/providers/github'
@@ -48,7 +49,7 @@ env:
 jobs:
   deploy:
     runs-on: 'ubuntu-latest'
-
+    environment: ${{ github.event.inputs.environments }}
     permissions:
       contents: 'read'
       id-token: 'write'
@@ -68,24 +69,38 @@ jobs:
           workload_identity_provider: '${{ env.WORKLOAD_IDENTITY_PROVIDER }}'
           service_account: '${{ env.SERVICE_ACCOUNT }}'
 
-      # BEGIN - Docker auth and build
+      # BEGIN - Login to GAR and build
+      #
+      # If you already have a container image, you can omit these steps.
+      - name: 'Login to GAR'
+        uses: 'docker/login-action@v4
+        with:
+          username: 'oauth2accesstoken'
+          password: '${{ steps.auth.outputs.auth_token }}'
+          registry: '${{ env.REGION }}-docker.pkg.dev'
 
       - name: 'Build and Push Container'
         run: |-
-          DOCKER_TAG="$${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ github.sha }}"
+          DOCKER_TAG="$${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_NAME }}/${{ env.SERVICE }}:${{ github.sha }}"
           docker build --tag "${DOCKER_TAG}" .
           docker push "${DOCKER_TAG}"
+
+      # END - Login to GAR and build
+
       - name: 'Deploy to Cloud Run'
-
-        # END - Docker auth and build
-
-        uses: 'google-github-actions/deploy-cloudrun@33553064113a37d688aa6937bacbdc481580be17' # google-github-actions/deploy-cloudrun@v2
+        uses: 'google-github-actions/deploy-cloudrun@v3
         with:
           service: '${{ env.SERVICE }}'
           region: '${{ env.REGION }}'
           # NOTE: If using a pre-built image, update the image name below:
-
-          image: '${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ github.sha }}'
+          image: '${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_NAME }}/${{ env.SERVICE }}:${{ github.sha }}'
+          env_vars: |-
+            NODE_ENV=${{ github.event.inputs.environments }}
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}
+            REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}
+            API_PORT=${{ vars.API_PORT }}
+          
       # If required, use the Cloud Run URL output in later steps
       - name: 'Show output'
         run: |2-
