@@ -39,7 +39,7 @@ on:
           - production
 
 env:
-  PROJECT_ID: 'nrc-mini-project' # TODO: update to your Google Cloud project ID
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }} # TODO: update to your Google Cloud project ID
   GAR_NAME: 'food-ordering-repo' # repository name in Artifact Registry
   REGION: 'asia-southeast3' # TODO: update to your region
   SERVICE: 'food-ordering-api' # TODO: update to your service name
@@ -88,7 +88,7 @@ jobs:
       # END - Login to GAR and build
 
       - name: 'Deploy to Cloud Run'
-        uses: 'google-github-actions/deploy-cloudrun@v3
+        uses: 'google-github-actions/deploy-cloudrun@v3'
         with:
           service: '${{ env.SERVICE }}'
           region: '${{ env.REGION }}'
@@ -100,7 +100,7 @@ jobs:
             ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}
             REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}
             API_PORT=${{ vars.API_PORT }}
-          
+
       # If required, use the Cloud Run URL output in later steps
       - name: 'Show output'
         run: |2-
