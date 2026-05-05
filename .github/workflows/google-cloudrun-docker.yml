@@ -39,7 +39,7 @@ on:
           - production
 
 env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }} # TODO: update to your Google Cloud project ID
+  PROJECT_ID: 'nrc-mini-project' # TODO: update to your Google Cloud project ID
   GAR_NAME: 'food-ordering-repo' # repository name in Artifact Registry
   REGION: 'asia-southeast3' # TODO: update to your region
   SERVICE: 'food-ordering-api' # TODO: update to your service name
