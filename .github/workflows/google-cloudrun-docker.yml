@@ -41,7 +41,7 @@ on:
 env:
   PROJECT_ID: 'nrc-mini-project' # TODO: update to your Google Cloud project ID
   GAR_NAME: 'food-ordering-repo' # repository name in Artifact Registry
-  GAR_REGION: 'asia-southeast3' # TODO: update to your Artifact Registry region
+  GAR_REGION: 'us-central1' # TODO: update to your Artifact Registry region
   CLOUD_RUN_REGION: 'us-central1'
   SERVICE: 'food-ordering-api' # TODO: update to your service name
   WORKLOAD_IDENTITY_PROVIDER: 'projects/966915883677/locations/global/workloadIdentityPools/github-actions/providers/github'
